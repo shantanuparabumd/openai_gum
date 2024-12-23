@@ -1,0 +1,9 @@
+actor_hidden_sizes: [256, 256]     # Hidden layer sizes for the actor network
+critic_hidden_sizes: [256, 256]    # Hidden layer sizes for the critic network
+learning_rate: 0.001               # Learning rate for the optimizer
+gamma: 0.99                        # Discount factor for future rewards
+tau: 0.005                         # Soft update parameter for target networks
+policy_noise: 0.2                  # Noise added to target policy during critic update
+noise_clip: 0.5                    # Range to clip noise
+policy_freq: 2                     # Frequency of delayed policy updates
+replay_buffer_size: 1_000_000      # Size of the replay buffer

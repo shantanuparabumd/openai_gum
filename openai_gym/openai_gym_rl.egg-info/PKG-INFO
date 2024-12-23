@@ -1,0 +1,7 @@
+Metadata-Version: 2.1
+Name: openai_gym_rl
+Version: 0.1
+Requires-Dist: gymnasium
+Requires-Dist: hydra-core
+Requires-Dist: torch
+Requires-Dist: numpy
