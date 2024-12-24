@@ -1,6 +1,7 @@
 # Reinforcement Learning with TD3 for Ant Environment
 
 This project demonstrates the use of the **Twin Delayed Deep Deterministic Policy Gradient (TD3)** algorithm to train a simulated quadruped robot (Ant) in the Gymnasium environment. It is designed to showcase RL techniques and custom reward design for stable and efficient gait generation.
+[evaluation_demo.webm](https://github.com/user-attachments/assets/c9035480-ab01-4f37-a0ef-ddc9240dcc02)
 
 ## What is TD3?
 TD3 is a state-of-the-art actor-critic algorithm for continuous control tasks. It improves upon DDPG (Deep Deterministic Policy Gradient) by addressing overestimation bias in Q-value predictions. Key features include:
