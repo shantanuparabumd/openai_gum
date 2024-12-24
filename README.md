@@ -37,12 +37,18 @@ In this project, we use the **Ant-v5** environment, which simulates a four-legge
 ### **Training Progress**
 Training the agent to maximize forward velocity while maintaining stability:
 
-![Training Metrics](./images/training_metrics.png)
+![Training Metrics](./outputs/metrics.png)
+
+
+### **Gait Plotting**
+
+Plotting og the contact forces to understand the gait. 
+
+![Training Metrics](./outputs/contact_forces.png)
 
 ### **Evaluation Visualization**
 The trained agent demonstrating a trot gait during evaluation:
 
-![Evaluation Demo](./videos/evaluation_demo.gif)
 
 ---
 

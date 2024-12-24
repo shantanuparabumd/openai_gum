@@ -3,14 +3,14 @@ forward_velocity:
   weight: 1.0        # Weight for forward velocity reward
 
 sideways_sway:
-  weight: 0.7        # Weight for penalizing sideways motion
+  weight: 0.5        # Weight for penalizing sideways motion
 
 torso_height:
   range: [0.2, 1.0]  # Healthy range for torso height
   penalty: -1.0      # Penalty for being outside the healthy range
 
 trot_gait:
-  weight: 0.7        # Weight for promoting a trot gait
+  weight: 0.5        # Weight for promoting a trot gait
 
 default_weights:
   forward_reward_weight: 1.0
