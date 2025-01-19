@@ -2,6 +2,11 @@
 
 This project demonstrates the use of the **Twin Delayed Deep Deterministic Policy Gradient (TD3)** algorithm to train a simulated quadruped robot (Ant) in the Gymnasium environment. It is designed to showcase RL techniques and custom reward design for stable and efficient gait generation.
 
+
+https://github.com/user-attachments/assets/d5dd646a-88fe-4a14-a7ca-5c7d381a001e
+
+
+
 ## What is TD3?
 TD3 is a state-of-the-art actor-critic algorithm for continuous control tasks. It improves upon DDPG (Deep Deterministic Policy Gradient) by addressing overestimation bias in Q-value predictions. Key features include:
 - **Target Policy Smoothing**: Adds noise to target actions to improve robustness.
