@@ -4,12 +4,14 @@ import hydra
 import matplotlib.pyplot as plt
 from omegaconf import DictConfig
 from models.td3 import TD3
-from environments.ant_env import AntEnv
+from environments.quad_env import QuadEnv
 from utils.replay_buffer import ReplayBuffer
 import numpy as np
+import re
 
 @hydra.main(version_base="1.2", config_path="../configs", config_name="config")
 def main(cfg: DictConfig):
+
     print("Start Training")
 
     # Create checkpoint directory
@@ -17,7 +19,7 @@ def main(cfg: DictConfig):
 
     # Initialize environment with training-specific rendering
     cfg.environment.render_mode = cfg.training.render_mode
-    env = AntEnv(cfg.environment, cfg.rewards)
+    env = QuadEnv(cfg.environment, cfg.rewards)
 
     # Get state and action dimensions from the environment
     state_dim = env.observation_space.shape[0]
@@ -25,6 +27,9 @@ def main(cfg: DictConfig):
 
     # Initialize TD3 model and replay buffer
     model = TD3(cfg.model, env)
+
+    episode_start = handle_checkpoints(model, cfg.logging.save_dir,cfg.training)
+
     replay_buffer = ReplayBuffer(cfg.model.replay_buffer_size, state_dim, action_dim)
 
     # Warm-up phase: Populate the buffer with random actions
@@ -43,7 +48,7 @@ def main(cfg: DictConfig):
 
     # Training loop
     rewards, critic1_losses, critic2_losses = [], [], []
-    for episode in range(cfg.training.episodes):
+    for episode in range(episode_start,cfg.training.episodes):
         state, _ = env.reset()
         total_reward = 0
 
@@ -75,16 +80,42 @@ def main(cfg: DictConfig):
 
 
 
+
 def handle_checkpoints(model, save_dir, training_cfg):
+    """
+    Handle checkpoints for resuming or overwriting training.
+
+    Args:
+        model: The model object to load weights into.
+        save_dir (str): Directory where checkpoints are stored.
+        training_cfg: Configuration object with `resume` and `overwrite` attributes.
+
+    Returns:
+        int: The episode index of the latest checkpoint, or None if no checkpoint is found.
+    """
+    latest_episode = 0
+
     if training_cfg.resume and not training_cfg.overwrite:
-        latest_checkpoint = max(glob.glob(f"{save_dir}/*"), key=os.path.getctime, default=None)
-        if latest_checkpoint:
-            print(f"Resuming training from {latest_checkpoint}")
-            model.load(latest_checkpoint)
+        # Find all actor checkpoint files
+        actor_checkpoints = [
+            f for f in glob.glob(f"{save_dir}/*_actor.pth") if re.search(r"episode_(\d+)_actor\.pth$", f)
+        ]
+        if actor_checkpoints:
+            # Extract the base path and episode index
+            latest_checkpoint = max(
+                actor_checkpoints,
+                key=lambda x: int(re.search(r"episode_(\d+)", x).group(1))
+            )
+            latest_episode = int(re.search(r"episode_(\d+)", latest_checkpoint).group(1))
+            base_path = latest_checkpoint.replace("_actor.pth", "")
+            print(f"Resuming training from {base_path} (Episode {latest_episode})")
+            model.load(base_path)  # Use the correct base path
         else:
-            print("No checkpoints found. Starting fresh.")
+            print("No actor checkpoints found. Starting fresh.")
     elif training_cfg.overwrite:
         print("Overwriting existing checkpoints. Starting fresh.")
+
+    return latest_episode
 
 
 def plot_metrics(rewards, critic1_losses, critic2_losses, metrics_file):

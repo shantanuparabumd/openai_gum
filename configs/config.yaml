@@ -1,22 +1,22 @@
 defaults:
   - _self_
-  - environment: ant
+  - environment: quadrobo
   - model: td3
   - rewards: rewards
 
 seed: 42
 
 training:
-  episodes: 1000               # Total number of training episodes
+  episodes: 100000               # Total number of training episodes
   max_steps: 1000             # Max steps per episode
   render_mode: "rgb_array"    # Rendering mode during training
   resume: true               # Resume training from the latest checkpoint
   overwrite: false            # Overwrite existing checkpoints if true
-  warmup_steps: 10000         # Number of random steps to populate the replay buffer
+  warmup_steps: 1000         # Number of random steps to populate the replay buffer
 
 evaluation:
-  episodes: 2          # Number of episodes to evaluate
-  max_steps: 200        # Max steps per episode
+  episodes: 20         # Number of episodes to evaluate
+  max_steps: 2000        # Max steps per episode
   render_mode: "human"   # Rendering mode for evaluation
 
 logging:

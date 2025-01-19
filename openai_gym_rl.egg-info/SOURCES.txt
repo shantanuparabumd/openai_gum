@@ -2,6 +2,7 @@ README.md
 setup.py
 environments/__init__.py
 environments/ant_env.py
+environments/quad_env.py
 models/__init__.py
 models/base_model.py
 models/td3.py
@@ -10,7 +11,11 @@ openai_gym_rl.egg-info/SOURCES.txt
 openai_gym_rl.egg-info/dependency_links.txt
 openai_gym_rl.egg-info/requires.txt
 openai_gym_rl.egg-info/top_level.txt
+quadrobo_gym/__init__.py
+quadrobo_gym/env.py
+quadrobo_gym/register.py
+quadrobo_gym/setup.py
+quadrobo_gym/test_gym.py
 utils/__init__.py
-utils/logger.py
 utils/replay_buffer.py
 utils/rewards.py

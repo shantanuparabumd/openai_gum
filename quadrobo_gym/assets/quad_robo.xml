@@ -1,0 +1,162 @@
+<mujoco model="quad_robo">
+  <option integrator="RK4" timestep="0.01" gravity="0 0 -9.8"/>
+  <compiler angle="radian" meshdir="meshes" texturedir="meshes" autolimits="true"/>
+
+  <statistic center="0 -0.1 0.2" extent="0.6" meansize="0.05"/>
+
+  <visual>
+    <headlight diffuse="0.6 0.6 0.6" ambient="0.3 0.3 0.3" specular="0 0 0"/>
+    <rgba haze="0.15 0.25 0.35 1"/>
+    <global azimuth="90" elevation="-20"/>
+    <quality shadowsize="8192"/>
+  </visual>
+
+  <default>
+     <default class="quadrobo">
+      <mesh scale="1.0 1.0 1.0"/>
+      <joint axis="0 1 0" frictionloss="0.1" armature="0.1"/>
+      <position kp="150" inheritrange="1" dampratio="0.95" forcerange="-75 75"/>
+      <default class="visual">
+        <geom type="mesh" contype="0" conaffinity="0" density="0" group="2"/>
+      </default>
+      <default class="collision">
+        <geom group="3" type="mesh"/>
+        <default class="sphere_collision">
+          <geom type="sphere" size="0.0006" rgba="1 0 0 1"/>
+        </default>
+      </default>
+    </default>
+  </default>
+
+  <asset>
+    <mesh class="quadrobo" name="body" file="body.STL" />
+    <mesh class="quadrobo" name="camera" file="camera.STL" />
+    <mesh class="quadrobo" name="back_right_thigh" file="back_right_thigh.STL" />
+    <mesh class="quadrobo" name="back_right_leg" file="back_right_leg.STL" />
+    <mesh class="quadrobo" name="back_right_shin" file="back_right_shin.STL" />
+    <mesh class="quadrobo" name="back_left_thigh" file="back_left_thigh.STL" />
+    <mesh class="quadrobo" name="back_left_leg" file="back_left_leg.STL" />
+    <mesh class="quadrobo" name="back_left_shin" file="back_left_shin.STL" />
+    <mesh class="quadrobo" name="front_left_thigh" file="front_left_thigh.STL" />
+    <mesh class="quadrobo" name="front_left_leg" file="front_left_leg.STL" />
+    <mesh class="quadrobo" name="front_left_shin" file="front_left_shin.STL" />
+    <mesh class="quadrobo" name="front_right_thigh" file="front_right_thigh.STL" />
+    <mesh class="quadrobo" name="front_right_leg" file="front_right_leg.STL" />
+    <mesh class="quadrobo" name="front_right_shin" file="front_right_shin.STL" />
+    
+    <texture type="skybox" builtin="gradient" rgb1="0.3 0.5 0.7" rgb2="0 0 0" width="512" height="3072"/>
+    <texture type="2d" name="groundplane" builtin="checker" mark="edge" rgb1="0.2 0.3 0.4" rgb2="0.1 0.2 0.3"
+      markrgb="0.8 0.8 0.8" width="300" height="300"/>
+    <material name="groundplane" texture="groundplane" texuniform="true" texrepeat="5 5" reflectance="0.2"/>
+    <material name="metal" rgba="0.517 0.529 0.537 1"/>
+  </asset>
+
+  <worldbody>
+    <light pos="0 0.1 2.5"/>
+    <geom name="floor" size="20 20 0.05" type="plane" material="groundplane" pos="0 0 0"/>
+    <site name="worldref" pos="0 0 0"/>
+    <camera name="fixed" pos="0 -3.0 0.5" xyaxes="1 0 0 0 0 1" />
+    <camera name="track" mode="trackcom" pos="0 -3.0 0.5" xyaxes="1 0 0 0 0 1" />
+    <body name="root" pos="0 0 1.0" quat="1 0 0 0">
+      <freejoint name="root" />
+      <inertial pos="-1.46356336883091e-07 -3.51552591482118e-08 1.14116542881959e-08"
+          mass="79.5537197619098"
+          diaginertia="1.6409 6.2523 7.3877" />
+
+      <site name="imu" size="0.01" pos="0 0 0" />
+      <geom type="mesh" rgba="0 0.752941 0 1" mesh="body" class="visual" />
+      <geom type="mesh" rgba="0 0.752941 0 1" mesh="body" class="collision"/>
+      <geom pos="0.4 -0.005 0.095" quat="0.707107 0.707107 0 0" type="mesh" rgba="0 0 0 1" mesh="camera" class="visual" />
+      <geom type="mesh" rgba="0 0 0 1" mesh="camera" pos="0.4 -0.005 0.095" quat="0.707107 0.707107 0 0" class="collision"/>
+      <body name="back_right_thigh" pos="-0.24995 -0.18 0" quat="0 0 -0.709831 0.704372">
+        <inertial pos="0.0629098 0 0.0554258" quat="0.993254 0 0.115957 0" mass="2.7702" diaginertia="0.0125596 0.0121647 0.00639203" />
+        <joint name="back_right_thigh_joint" pos="0 0 0" axis="1 0 0" range="-1.57 1.57"  />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="back_right_thigh" class="visual" />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="back_right_thigh" class="collision"/>
+        <body name="back_right_leg" pos="0.07005 0 0.070008" quat="-0.00392279 0.707097 0.00392277 0.707095">
+          <inertial pos="0.0730353 -0.237418 6.51884e-09" quat="0.509262 0.490495 -0.509328 0.490563" mass="6.93817" diaginertia="0.145238 0.144942 0.0172124" />
+          <joint name="back_right_leg_joint" pos="0 0 0" axis="1 0 0" range="-1.57 1.57"  />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="back_right_leg" class="visual" />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="back_right_leg" class="collision"/>
+          <body name="back_right_shin" pos="0 -0.5 0" quat="0.00459773 0.999989 0 0">
+            <inertial pos="0.0699917 0.206759 -2.45496e-07" quat="0.499992 0.499992 -0.500008 0.500008" mass="2.18909" diaginertia="0.0499442 0.0495545 0.00191161" />
+            <joint name="back_right_shin_joint" pos="0 0 0" axis="1 0 0" range="-1.57 1.57"  />
+            <geom type="mesh" rgba="0 0 0 1" mesh="back_right_shin" class="visual" />
+            <geom type="mesh" rgba="0 0 0 1" mesh="back_right_shin" class="collision"/>
+          </body>
+        </body>
+      </body>
+      <body name="back_left_thigh" pos="-0.24995 0.18 0" quat="-2.62832e-06 -2.566e-06 0.698572 0.71554">
+        <inertial pos="0.0629098 0 0.0554258" quat="0.993254 0 0.115957 0" mass="2.7702" diaginertia="0.0125596 0.0121647 0.00639203" />
+        <joint name="back_left_thigh_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57"  />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="back_left_thigh" class="visual" />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="back_left_thigh" class="collision"/>
+        <body name="back_left_leg" pos="0.07005 0 0.0700804" quat="0.707086 0.00546207 -0.707086 0.00546206">
+          <inertial pos="0.0729632 -0.237418 -5.14056e-09" quat="0.509261 0.490494 -0.509329 0.490564" mass="6.93817" diaginertia="0.145238 0.144942 0.0172124" />
+          <joint name="back_left_leg_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57"  />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="back_left_leg" class="visual" />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="back_left_leg" class="collision"/>
+          <body name="back_left_shin" pos="0 -0.5 0" quat="0.00510775 -0.999987 0 0">
+            <inertial pos="0.0699198 0.206759 2.62203e-07" quat="0.5 0.5 -0.5 0.5" mass="2.1891" diaginertia="0.0499443 0.0495545 0.00191162" />
+            <joint name="back_left_shin_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57"  />
+            <geom type="mesh" rgba="0 0 0 1" mesh="back_left_shin" class="visual" />
+            <geom type="mesh" rgba="0 0 0 1" mesh="back_left_shin" class="collision"/>
+          </body>
+        </body>
+      </body>
+      <body name="front_left_thigh" pos="0.24995 0.18 0" quat="0.717563 -0.696494 0 0">
+        <inertial pos="0.0629098 0 0.0554258" quat="0.993254 0 0.115957 0" mass="2.7702" diaginertia="0.0125596 0.0121647 0.00639203" />
+        <joint name="front_left_thigh_joint" pos="0 0 0" axis="1 0 0" range="-1.57 1.57"  />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="front_left_thigh" class="visual" />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="front_left_thigh" class="collision"/>
+        <body name="front_left_leg" pos="0.07005 0 0.0701239" quat="-0.00317285 -0.7071 0.00317286 -0.7071">
+          <inertial pos="0.0729198 -0.237418 3.33459e-09" quat="0.509262 0.490495 -0.509328 0.490564" mass="6.93817" diaginertia="0.145238 0.144942 0.0172124" />
+          <joint name="front_left_leg_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57"  />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="front_left_leg" class="visual" />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="front_left_leg" class="collision"/>
+          <body name="front_left_shin" pos="0 -0.5 0" quat="0.0117301 -0.999931 0 0">
+            <inertial pos="0.0698764 0.206759 1.34054e-07" quat="0.5 0.5 -0.5 0.5" mass="2.18909" diaginertia="0.0499442 0.0495545 0.00191161" />
+            <joint name="front_left_shin_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57"  />
+            <geom type="mesh" rgba="0 0 0 1" mesh="front_left_shin" class="visual" />
+            <geom type="mesh" rgba="0 0 0 1" mesh="front_left_shin" class="collision"/>
+          </body>
+        </body>
+      </body>
+      <body name="front_right_thigh" pos="0.24995 -0.18 0" quat="0.705082 0.709126 0 0">
+        <inertial pos="0.0629098 0 0.0554258" quat="0.993254 0 0.115957 0" mass="2.7702" diaginertia="0.0125596 0.0121647 0.00639203" />
+        <joint name="front_right_thigh_joint" pos="0 0 0" axis="-1 0 0" range="-1.57 1.57"  />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="front_right_thigh" class="visual" />
+        <geom type="mesh" rgba="0.25098 0.25098 0.25098 1" mesh="front_right_thigh" class="collision"/>
+        <body name="front_right_leg" pos="0.07005 0 0.0700046" quat="0.707082 0.00589294 -0.707082 0.00589293">
+          <inertial pos="0.073039 -0.237418 -3.69308e-09" quat="0.509261 0.490494 -0.509328 0.490564" mass="6.93817" diaginertia="0.145238 0.144942 0.0172124" />
+          <joint name="front_right_leg_joint" pos="0 0 0" axis="1 0 0" range="-1.57 1.57"  />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="front_right_leg" class="visual" />
+          <geom type="mesh" rgba="0.501961 1 0.501961 1" mesh="front_right_leg" class="collision"/>
+          <body name="front_right_shin" pos="0 -0.5 0" quat="0.0155385 0.999879 0 0">
+            <inertial pos="0.0699954 0.206759 -1.74081e-07" quat="0.499992 0.499992 -0.500008 0.500008" mass="2.18909" diaginertia="0.0499442 0.0495545 0.00191161" />
+            <joint name="front_right_shin_joint" pos="0 0 0" axis="1 0 0" range="-1.57 1.57"  />
+            <geom type="mesh" rgba="0 0 0 1" mesh="front_right_shin" class="visual" />
+            <geom type="mesh" rgba="0 0 0 1" mesh="front_right_shin" class="collision"/>
+          </body>
+        </body>
+      </body>
+    </body>
+  </worldbody>
+
+  <actuator>
+    <position class="quadrobo" name="back_right_thigh_joint" joint="back_right_thigh_joint"  />
+    <position class="quadrobo" name="back_right_leg_joint" joint="back_right_leg_joint"  />
+    <position class="quadrobo" name="back_right_shin_joint" joint="back_right_shin_joint"  />
+    <position class="quadrobo" name="back_left_thigh_joint" joint="back_left_thigh_joint"  />
+    <position class="quadrobo" name="back_left_leg_joint" joint="back_left_leg_joint"  />
+    <position class="quadrobo" name="back_left_shin_joint" joint="back_left_shin_joint"  />
+    <position class="quadrobo" name="front_left_thigh_joint" joint="front_left_thigh_joint"  />
+    <position class="quadrobo" name="front_left_leg_joint" joint="front_left_leg_joint"  />
+    <position class="quadrobo" name="front_left_shin_joint" joint="front_left_shin_joint"  />
+    <position class="quadrobo" name="front_right_thigh_joint" joint="front_right_thigh_joint"  />
+    <position class="quadrobo" name="front_right_leg_joint" joint="front_right_leg_joint"  />
+    <position class="quadrobo" name="front_right_shin_joint" joint="front_right_shin_joint"  />
+  </actuator>
+
+  
+</mujoco>

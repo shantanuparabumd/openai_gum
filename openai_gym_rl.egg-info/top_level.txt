@@ -1,3 +1,4 @@
 environments
 models
+quadrobo_gym
 utils

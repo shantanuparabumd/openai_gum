@@ -1,102 +1,66 @@
-import os
-import gymnasium as gym
-from gymnasium.spaces import Box
-import numpy as np
-from gymnasium.utils import EzPickle
-import mujoco
-
-class QuadRobotEnv(gym.Env, EzPickle):
-    """
-    Custom Gymnasium environment for the QuadRobot using MuJoCo.
-    """
-
-    metadata = {"render_modes": ["human", "rgb_array"], "render_fps": 20}
-
-    def __init__(self, xml_file="quad_robo.xml", render_mode=None):
-        EzPickle.__init__(self, xml_file, render_mode)
-
-        # Path to the MJCF file
-        xml_path = os.path.join(os.path.dirname(__file__), "../assets", xml_file)
-
-        import mujoco  # Import Mujoco only when needed to keep dependencies light
-        self.model = mujoco.MjModel.from_xml_path(xml_path)
-        self.data = mujoco.MjData(self.model)
-
-        # Set observation and action spaces
-        obs_dim = self.model.nq + self.model.nv  # positions (qpos) + velocities (qvel)
-        self.observation_space = Box(low=-np.inf, high=np.inf, shape=(obs_dim,), dtype=np.float32)
-        self.action_space = Box(low=-1.0, high=1.0, shape=(self.model.nu,), dtype=np.float32)
-
-        # Render mode setup
-        self.render_mode = render_mode
-        self.viewer = None  # Viewer will be initialized lazily during render()
-
-    
-    def reset(self, *, seed=None, options=None):
-        super().reset(seed=seed)
-        mujoco.mj_resetData(self.model, self.data)
-
-        # Observation after reset
-        observation = self.normalize_observation(np.concatenate([self.data.qpos, self.data.qvel]))
-
-        return observation, {}
-
-    def step(self, action):
-        mujoco.mj_step(self.model, self.data)
-
-        # Observation after step
-        observation = self.normalize_observation(np.concatenate([self.data.qpos, self.data.qvel]))
-
-        # Calculate reward
-        reward = self._calculate_reward()
-
-        # Define termination criteria
-        terminated = self._is_terminated()
-        truncated = False  # Add truncation logic if needed
-
-        # Return step data
-        return observation, reward, terminated, truncated, {}
-
-    def normalize_observation(self, observation):
-        # Normalize qpos and qvel separately
-        normalized_qpos = observation[:self.model.nq] / np.clip(self.model.nq, a_min=1.0, a_max=None)
-        normalized_qvel = observation[self.model.nq:] / np.clip(self.model.nv, a_min=1.0, a_max=None)
-        return np.concatenate([normalized_qpos, normalized_qvel]).astype(np.float32)
+import gym
+from typing import Tuple
+from utils.rewards import calculate_reward
 
 
-    def _calculate_reward(self):
-        # Example reward: forward velocity and penalties for sideways velocity
-        forward_velocity = self.data.qvel[0]
-        sideways_velocity = abs(self.data.qvel[1])
-        return forward_velocity - 0.1 * sideways_velocity
+class QuadEnv:
+    def __init__(self, env_config, reward_config):
+        """Initialize the Ant environment with custom configurations.
 
-    def _is_terminated(self):
-        # Example termination: based on height of the torso
-        torso_height = self.data.qpos[2]
-        return torso_height < 0.2 or torso_height > 1.0
+        Args:
+            env_config: Configuration dictionary for the environment.
+            reward_config: Configuration dictionary for custom rewards.
+        """
+        print(f"Choosing {env_config.name}")
+        self.env = gym.make(
+            env_config.name,
+            render_mode=env_config.render_mode,
+            ctrl_cost_weight=env_config.ctrl_cost_weight,
+            use_contact_forces = True,
+            contact_cost_weight=env_config.contact_cost_weight,
+            healthy_reward=env_config.healthy_reward,
+            terminate_when_unhealthy=env_config.terminate_when_unhealthy,
+            healthy_z_range=env_config.healthy_z_range,
+            contact_force_range=env_config.contact_force_range,
+        )
+        self.max_steps = env_config.max_steps
+        self.reward_config = reward_config
 
-    def render(self):
-        """Handles rendering based on the mode."""
-        if self.render_mode == "human":
-            if self.viewer is None:
-                # Initialize the viewer only if it hasn't been initialized
-                from mujoco.viewer import launch_passive
-                self.viewer = launch_passive(self.model, self.data)
-            # No explicit render call needed; launch_passive handles the GUI.
-        elif self.render_mode == "rgb_array":
-            from mujoco.renderer import MjRenderer
-            # Use an offscreen renderer for pixel data
-            renderer = MjRenderer(self.model)
-            renderer.render(self.data)
-            return renderer.read_pixels()
-        else:
-            raise ValueError(f"Unsupported render mode: {self.render_mode}")
+    def reset(self) -> Tuple:
+        """Reset the environment and return the initial state."""
+        return self.env.reset()
 
+    def step(self, action) -> Tuple:
+        """Take a step in the environment and calculate the reward.
 
-    def close(self):
-        """Properly closes the viewer."""
-        if self.viewer is not None:
-            if hasattr(self.viewer, "close"):
-                self.viewer.close()
-                self.viewer = None
+        Args:
+            action: The action to apply in the environment.
 
+        Returns:
+            Tuple containing the next state, custom reward, termination status,
+            truncation status, and additional info.
+        """
+        next_state, reward, terminated, truncated, info = self.env.step(action)
+
+        # Calculate custom reward
+        # custom_reward = calculate_reward(next_state, reward, self.reward_config)
+
+        return next_state, reward, terminated, truncated, info
+
+    def close(self) -> None:
+        """Close the environment."""
+        self.env.close()
+
+    @property
+    def observation_space(self):
+        """Return the observation space of the environment."""
+        return self.env.observation_space
+
+    @property
+    def action_space(self):
+        """Return the action space of the environment."""
+        return self.env.action_space
+
+    def render(self) -> None:
+        """Render the environment using the pre-set render mode."""
+        self.env.render()

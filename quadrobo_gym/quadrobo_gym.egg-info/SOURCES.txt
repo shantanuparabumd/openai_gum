@@ -1,0 +1,7 @@
+setup.py
+quadrobo_gym.egg-info/PKG-INFO
+quadrobo_gym.egg-info/SOURCES.txt
+quadrobo_gym.egg-info/dependency_links.txt
+quadrobo_gym.egg-info/entry_points.txt
+quadrobo_gym.egg-info/requires.txt
+quadrobo_gym.egg-info/top_level.txt
