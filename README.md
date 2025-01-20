@@ -6,7 +6,10 @@ Welcome to the **Quadruped Robot Reinforcement Learning Framework**, a project t
 
 ## **Simulation Video**
 
-*Placeholder for simulation video showcasing the trained robot's locomotion.*
+
+
+https://github.com/user-attachments/assets/d51b1138-ef5c-40bf-964e-35f496e49969
+
 
 ---
 
