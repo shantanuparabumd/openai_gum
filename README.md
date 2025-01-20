@@ -1,117 +1,121 @@
-# Reinforcement Learning with TD3 for Ant Environment
+# Quadruped Robot Reinforcement Learning Framework
 
-This project demonstrates the use of the **Twin Delayed Deep Deterministic Policy Gradient (TD3)** algorithm to train a simulated quadruped robot (Ant) in the Gymnasium environment. It is designed to showcase RL techniques and custom reward design for stable and efficient gait generation.
-
-
-https://github.com/user-attachments/assets/d5dd646a-88fe-4a14-a7ca-5c7d381a001e
-
-
-
-## What is TD3?
-TD3 is a state-of-the-art actor-critic algorithm for continuous control tasks. It improves upon DDPG (Deep Deterministic Policy Gradient) by addressing overestimation bias in Q-value predictions. Key features include:
-- **Target Policy Smoothing**: Adds noise to target actions to improve robustness.
-- **Delayed Updates**: Updates the policy less frequently to stabilize training.
-- **Clipped Double Q-Learning**: Uses two Q-networks to reduce overestimation bias.
-
-This makes TD3 particularly effective for training agents in continuous action spaces, such as controlling a quadruped robot.
-
-## What is Gymnasium (formerly OpenAI Gym)?
-Gymnasium provides a standard interface for developing and comparing reinforcement learning algorithms. It offers:
-- A variety of pre-built environments, including simulated robotics tasks.
-- A simple API for environment interaction (`reset`, `step`, `render`).
-- Tools for benchmarking RL agents.
-
-In this project, we use the **Ant-v5** environment, which simulates a four-legged robot designed for locomotion tasks.
-
-## Project Highlights
-- **TD3 Algorithm**: Implements actor-critic networks with delayed updates for stable training.
-- **Custom Rewards**: Encourages gait optimization, forward velocity, and torso stability.
-- **Visualization**: Includes plots and videos to demonstrate training progress and evaluation.
+Welcome to the **Quadruped Robot Reinforcement Learning Framework**, a project that combines cutting-edge reinforcement learning techniques with MuJoCo physics simulation to train quadruped robots for stable and efficient locomotion. This framework allows you to experiment with custom environments, dynamic reward functions, and powerful actor-critic models to achieve state-of-the-art results.
 
 ---
 
-## Features
-- **Dynamic Gait Learning**: Optimizes the Ant robot for forward motion with a stable trot gait.
-- **Configurable Parameters**: Easy-to-tune hyperparameters and reward components.
-- **Rendering Modes**: Visualizes training in `rgb_array` mode and evaluation in `human` mode.
+## **Simulation Video**
+
+*Placeholder for simulation video showcasing the trained robot's locomotion.*
 
 ---
 
-## Examples
+## **Overview**
 
-### **Training Progress**
-Training the agent to maximize forward velocity while maintaining stability:
+This project focuses on teaching a quadruped robot to walk using reinforcement learning techniques. It leverages the **Twin Delayed Deep Deterministic Policy Gradient (TD3)** algorithm within a custom-designed MuJoCo-based environment (`QuadroboEnv`).
 
-![Training Metrics](./outputs/metrics.png)
-
-
-### **Gait Plotting**
-
-Plotting og the contact forces to understand the gait. 
-
-![Training Metrics](./outputs/contact_forces.png)
-
-### **Evaluation Visualization**
-The trained agent demonstrating a trot gait during evaluation:
-
+### Key Features:
+- Custom OpenAI Gym-compatible environment.
+- Dynamic reward function emphasizing forward motion, stability, and energy efficiency.
+- TD3 model with tunable parameters.
+- Logging, checkpointing, and evaluation for seamless experimentation.
 
 ---
 
-## Configuration Files
-All configurations for the project are managed through YAML files, allowing easy tuning of parameters and modularity:
+## **Concept of the Project**
 
-### **`configs/config.yaml`**
-- Main configuration file.
-- Defines training, evaluation, and logging settings.
-
-### **`configs/environment/ant.yaml`**
-- Environment-specific parameters for Ant-v5, including rewards and dynamics.
-
-### **`configs/model/td3.yaml`**
-- Hyperparameters for the TD3 algorithm, such as learning rate, noise, and policy frequency.
-
-### **`configs/rewards/rewards.yaml`**
-- Custom reward components for gait optimization, stability, and efficiency.
-
-These files ensure that the project is flexible and easy to customize for different tasks.
+At its core, this project simulates a quadruped robot tasked with navigating a flat terrain. The robot learns to walk, balance, and optimize its gait through continuous interaction with the environment. A carefully designed reward system encourages the robot to move forward efficiently while penalizing energy wastage, unstable orientations, and off-track movements.
 
 ---
 
-## How to Run
+## **Folder Structure**
 
-### Setup
+The project is well-organized into multiple modules for ease of development and scalability:
 
-1. Clone the repository:
+```plaintext
+docs/
+├── custom_env.md                 # Documentation for the custom environment
+├── installation_and_troubleshoot.md  # Installation and troubleshooting steps
+├── model_definition.md           # Details of the TD3 model implementation
+├── project_structure.md          # Explanation of the project structure
+├── reward_design.md              # Detailed breakdown of the reward function
+└── training_and_evaluation.md    # Training and evaluation procedures
+```
+
+Refer to the **[Project Structure Documentation](docs/project_structure.md)** for a complete breakdown.
+
+---
+
+## **How to Use**
+
+### 1. **Installation**
+Refer to **[Installation and Troubleshooting Documentation](docs/installation_and_troubleshoot.md)** for detailed steps.
+
+Quick start:
+1. Install Miniconda and create a virtual environment:
    ```bash
-   git clone openai_gym
-   cd openai_gym
+   conda create -n mujoco_openai python=3.10
+   conda activate mujoco_openai
+   ```
+2. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+3. Install the custom environment:
+   ```bash
+   pip install .
    ```
 
-2. Create and activate a Conda environment:
-   ```bash
-   conda create -n rl_env python=3.8 -y
-   conda activate rl_env
-   ```
-
-3. Install dependencies:
-   ```bash
-   conda install --file requirements.txt
-   ```
-
-4. Configure the environment using `configs/config.yaml`.
-
-### Training
-Run the training script to train the TD3 agent:
+### 2. **Training**
+Run the training script to teach the robot:
 ```bash
 python scripts/train.py
 ```
+Adjust the parameters in the `configs/` directory.
 
-### Evaluation
-Evaluate the trained agent:
+### 3. **Evaluation**
+Evaluate a trained model:
 ```bash
 python scripts/evaluate.py
 ```
+Refer to the **[Training and Evaluation Documentation](docs/training_and_evaluation.md)** for more details.
+
+---
+
+## **Reward Design**
+
+The reward function is designed to:
+- Encourage forward motion.
+- Penalize sideways drift and unstable orientation.
+- Promote energy-efficient gait patterns.
+- Reward the robot for maintaining a target velocity and balance.
+
+For a comprehensive explanation, see the **[Reward Design Documentation](docs/reward_design.md)**.
+
+---
+
+## **Custom Environment**
+
+The `QuadroboEnv` environment is the heart of this project. It is a MuJoCo-based environment designed to simulate the physics of a quadruped robot. The environment provides:
+- Joint positions, velocities, and forces.
+- Orientation feedback (roll, pitch, yaw).
+- Contact forces for each leg.
+
+Details are available in the **[Custom Environment Documentation](docs/custom_env.md)**.
+
+---
+
+## **TD3 Model**
+
+The **Twin Delayed Deep Deterministic Policy Gradient (TD3)** algorithm is used to train the robot. The model features:
+- Actor-critic networks for continuous action spaces.
+- Noise injection for exploration.
+- Soft updates to stabilize learning.
+
+Read more in the **[Model Definition Documentation](docs/model_definition.md)**.
+
 
 ---
 
 
+We welcome contributions and feedback. Feel free to open issues or submit pull requests to improve this project. 🚀

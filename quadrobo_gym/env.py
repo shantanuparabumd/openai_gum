@@ -142,13 +142,9 @@ class QuadroboEnv(MujocoEnv, utils.EzPickle):
         total_reward = healthy_reward + 7.5*forward_displacement - 0.1*sideways_displacement + 5.0 * forward_reward - 0.5*np.sum(np.abs(joint_velocities)) 
         orientation_penalty = 0.02 * abs(roll) + 0.02*abs(pitch) + 0.05 *abs(yaw)
 
-        # Control cost calculation
-        ctrl_cost = self.control_cost(action)
-
         # Total reward including penalties
         reward = total_reward - orientation_penalty
 
-        
         # Define permissible ranges for roll, pitch, yaw
         max_roll = np.radians(60)  # Maximum roll in radians
         max_pitch = np.radians(60)  # Maximum pitch in radians
@@ -163,7 +159,6 @@ class QuadroboEnv(MujocoEnv, utils.EzPickle):
         # Debug information
         info = {
             "reward_forward": forward_reward,
-            "reward_ctrl": -ctrl_cost,
             "reward_survive": healthy_reward,
             "x_position": xy_position_after[0],
             "y_position": xy_position_after[1],

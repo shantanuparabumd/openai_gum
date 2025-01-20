@@ -18,7 +18,7 @@ def evaluate(cfg: DictConfig):
     model = TD3(cfg.model, env)
 
     # Load latest checkpoint
-    checkpoint_path = find_checkpoint_by_index(cfg.logging.save_dir,19000)
+    # checkpoint_path = find_checkpoint_by_index(cfg.logging.save_dir,1000)
     checkpoint_path = find_latest_checkpoint(cfg.logging.save_dir)
     if checkpoint_path:
         print(f"Loading model from: {checkpoint_path}")
